@@ -112,8 +112,12 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-
     # IMPLEMENT THIS
+    do_logout()
+    flash("Successrully Logged Out!", "info")
+    return redirect('/')
+
+
 
 
 ##############################################################################
@@ -290,6 +294,8 @@ def homepage():
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users
     """
+    # import pdb
+    # pdb.set_trace()
 
     if g.user:
         messages = (Message
