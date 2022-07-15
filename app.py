@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, EditProfileForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, Likes
 
 CURR_USER_KEY = "curr_user"
 
@@ -303,7 +303,26 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+@app.route("/users/add_like/<int:msg_id>", methods=["POST"])
+def like_message(msg_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    message = Message.query.get_or_404(msg_id)
+    if message.user_id == g.user.id:
+        flash("You can't like your own messages", "info")
+        redirect('/')
+    liked_message_ids = [ m.id for m in g.user.likes ]
+    if msg_id not in liked_message_ids:
+        new_like = Likes(user_id=g.user.id, message_id=msg_id)
+        db.session.add(new_like)
+        db.session.commit()
+    else:
+        like_to_remove = Likes.query.filter(Likes.message_id == msg_id).first()
+        db.session.delete(like_to_remove)
+        db.session.commit()
 
+    return redirect('/')
 ##############################################################################
 # Homepage and error pages
 
@@ -328,8 +347,10 @@ def homepage():
                     .order_by(Message.timestamp.desc())
                     .all())
         messages = [message for message in all_messages if message.user_id in following_ids]
+        """Get liked message ids"""
+        liked_message_ids = [ m.id for m in g.user.likes ]
 
-        return render_template('home.html', messages=messages)
+        return render_template('home.html', messages=messages, likes=liked_message_ids)
 
     else:
         return render_template('home-anon.html')
