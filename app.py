@@ -316,11 +316,13 @@ def homepage():
     - logged in: 100 most recent messages of followed_users
     """
 
-
     if g.user:
-
+        """Get all users g.user is following
+        Put id's into an array with the user id to filter out messages that only have a user_id that is in that list.
+        """
         followed_users = g.user.following
         following_ids = [user.id for user in followed_users]
+        following_ids.append(g.user.id) # add user id to make sure their messages show as well.
         all_messages = (Message
                     .query
                     .order_by(Message.timestamp.desc())
