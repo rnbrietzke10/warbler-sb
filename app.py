@@ -235,7 +235,6 @@ def profile():
             flash("Access unauthorized.", "danger")
             return redirect("/")
 
-
     return render_template('users/edit.html', form=form)
 
 
