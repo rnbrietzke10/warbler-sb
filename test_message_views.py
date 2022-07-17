@@ -51,8 +51,10 @@ class MessageViewTestCase(TestCase):
                                     image_url=None)
         db.session.commit()
 
+    def tearDown(self):
+        """Clean up fouled transactions."""
+        db.session.rollback()
 
-    """*********Message view functions**********"""
     def test_add_message(self):
         """Can user add a message?"""
 
@@ -112,7 +114,6 @@ class MessageViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
 
-            # Make sure it redirects
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Access unauthorized.", html)
 
