@@ -48,21 +48,21 @@ class UserViewTestCase(TestCase):
     #     """Clean up fouled transactions."""
     #     db.session.rollback()
 
-    # def test_see_following_page(self):
-    #     """See if user is logged in they can see who they are following and who is following them"""
-    #     new_follow = Follows(user_being_followed_id=2, user_following_id=1)
-    #     db.session.add(new_follow)
-    #     db.session.commit()
+    def test_see_following_page(self):
+        """See if user is logged in they can see who they are following and who is following them"""
+        new_follow = Follows(user_being_followed_id=2, user_following_id=1)
+        db.session.add(new_follow)
+        db.session.commit()
 
-    #     with self.client as c:
-    #         with c.session_transaction() as sess:
-    #             sess[CURR_USER_KEY] = self.test_user1.id
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_user1.id
 
-    #             resp = c.get(f'/users/{self.test_user1.id}/following')
-    #             html = resp.get_data(as_text=True)
+            resp = c.get(f'/users/{self.test_user1.id}/following')
+            html = resp.get_data(as_text=True)
 
-    #             self.assertEqual(resp.status_code, 200)
-    #             # self.assertIn("@testUser2", html)
+            self.assertEqual(resp.status_code, 200)
+            # self.assertIn("@testUser2", html)
 
     def test_users_page(self):
         with self.client as c:
@@ -80,9 +80,9 @@ class UserViewTestCase(TestCase):
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.test_user1.id
 
-                resp = c.get('/users/1')
-                html = resp.get_data(as_text=True)
+            resp = c.get('/users/1')
+            html = resp.get_data(as_text=True)
 
-                self.assertEqual(resp.status_code, 200)
-                self.assertIn('@testUser1', html)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('@testUser1', html)
 
