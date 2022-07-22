@@ -44,9 +44,9 @@ class UserViewTestCase(TestCase):
 
         db.session.commit()
 
-    # def tearDown(self):
-    #     """Clean up fouled transactions."""
-    #     db.session.rollback()
+    def tearDown(self):
+        """Clean up fouled transactions."""
+        db.session.rollback()
 
     def test_see_following_page(self):
         """See if user is logged in they can see who they are following and who is following them"""
