@@ -86,3 +86,50 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('@testUser1', html)
 
+
+
+    def test_anonymous_user_can_see_following_page(self):
+            """See if user that is not logged is redirected to the home anon page when they try to view the following page"""
+            new_follow = Follows(user_being_followed_id=2, user_following_id=1)
+            db.session.add(new_follow)
+            db.session.commit()
+
+            with self.client as c:
+
+                resp = c.get(f'/users/{self.test_user1.id}/following', follow_redirects=True)
+                html = resp.get_data(as_text=True)
+
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn("New to Warbler?", html)
+
+
+    """Test Followers page for logged in users and anonymous users."""
+    def test_see_followers_page(self):
+        """Test if the loggged in user can view the people that are following them"""
+        new_follow = Follows(user_being_followed_id=2, user_following_id=1)
+        db.session.add(new_follow)
+        db.session.commit()
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_user2.id
+
+            resp = c.get(f'/users/{self.test_user2.id}/followers')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("testUser", html)
+
+    def test_anonymous_user_can_see_followers_page(self):
+        """Test if the anonymous user is redirected to the home page when the try to view followers page"""
+        new_follow = Follows(user_being_followed_id=2, user_following_id=1)
+        db.session.add(new_follow)
+        db.session.commit()
+
+        with self.client as c:
+
+            resp = c.get(f'/users/{self.test_user2.id}/followers', follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("Sign up now", html)

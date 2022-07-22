@@ -159,7 +159,8 @@ class MessageViewTestCase(TestCase):
 
 
     # def test_delete_message(self):
-            """Don't know why mine doesn't work but when I pasted theres in it does pass. Went through line by line and other than the message id being different and instead of m I used msg1"""
+            """Don't know why mine doesn't work but when I pasted theirs in it does pass. Went through line by line and other than the message id being different and instead of m I used msg1"""
+            """Fix last four lines of code should be at the same indention level as with c.session_transaction() as sess:"""
     #     """Can user delete there message"""
     #     msg1 = Message(id=12345, text="TestMessage1", user_id=self.testuser.id)
     #     db.session.add(msg1)
