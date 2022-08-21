@@ -31,7 +31,7 @@ db.create_all()
 
 
 class MessageModelTestCase(TestCase):
-    """Test views for messages."""
+    """Test database model for messages."""
 
     def setUp(self):
         """Create test client, add sample data."""
